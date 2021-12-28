@@ -3,5 +3,5 @@
 class PostfixConvertor {
 public:
 	int GetPrecedence(std::string);
-	void InfixToPostfix(std::string s);
+	std::string InfixToPostfix(std::string s);
 };

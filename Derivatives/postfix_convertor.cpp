@@ -17,7 +17,7 @@ int PostfixConvertor::GetPrecedence(string c) {
 
 // The main function to convert infix expression
 //to postfix expression
-void PostfixConvertor::InfixToPostfix(std::string s) {
+std::string PostfixConvertor::InfixToPostfix(std::string s) {
 
 	stack<std::string> st; 
 	string result;
@@ -78,7 +78,7 @@ void PostfixConvertor::InfixToPostfix(std::string s) {
 		result += " ";
 		st.pop();
 	}
-
 	cout << result << endl;
+	return result;
 }
 
