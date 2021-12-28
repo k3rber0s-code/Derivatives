@@ -18,6 +18,7 @@ Node* Node::Duplicate(Node* root)
 	else if (root->right != NULL) {
 		newRoot->left = Duplicate(root->right);
 	}
+	return newRoot;
 }
 void Stack::push(Node* x)
 {
@@ -94,11 +95,11 @@ void ExpressionTree::Differentiate(Node* node)
 
 	if (node->IsLeaf()) {
 		if (node->nodeType == INT) {
-			node->value == "0";
+			node->value = "0";
 		}
 		else if (node->nodeType == VAR) { //nodeType VAR
 			node->nodeType == INT;
-			node->value == "1";
+			node->value = "1";
 		}
 		else {
 			throw;
@@ -115,18 +116,60 @@ void ExpressionTree::Differentiate(Node* node)
 			Differentiate(node->right);
 		}
 		else if (node->value == "*") {
-			node->value == "+";
+			node->value = "+";
 			Node* l = node->left;
 			Node* r = node->right;
 
 			Node* multiplier1 = new Node("*", OPE);
 			Node* multiplier2 = new Node("*", OPE);
 
+			Node* dl = l->Duplicate(l);
+			Differentiate(dl);
+			Node* dr = r->Duplicate(r);
+			Differentiate(dr);
+
+			multiplier1->left = l;
+			multiplier1->right = dr;
+
+			multiplier2->left = dl;
+			multiplier2->right = r;
+
+
 			node->left = multiplier1;
 			node->right = multiplier2;
+		}
+		else if (node->value == "/") {
+			Node* l = node->left;
+			Node* r = node->right;
 
+			//left part
 
+			Node* subtractor1 = new Node("-", OPE);
 
+			Node* multiplier1 = new Node("*", OPE);
+			Node* multiplier2 = new Node("*", OPE);
+
+			subtractor1->left = multiplier1;
+			subtractor1->right = multiplier2;
+
+			Node* dl = l->Duplicate(l);
+			Differentiate(dl);
+			Node* dr = r->Duplicate(r);
+			Differentiate(dr);
+
+			multiplier1->left = l;
+			multiplier1->right = dr;
+
+			multiplier2->left = dl;
+			multiplier2->right = r;
+
+			//right part
+			Node* multiplier3 = new Node("*", OPE);
+			multiplier3->left = r->Duplicate(r);
+			multiplier3->right = dr->Duplicate(dr);
+
+			node->left = subtractor1;
+			node->right = multiplier3;
 		}
 	}
 }
