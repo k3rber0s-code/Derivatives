@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <string>
 
 enum NodeType {
 	INT,
@@ -27,8 +28,8 @@ public:
 class Stack {
 	Node* head = NULL;
 public:
-	void push(Node*);
-	Node* pop();
+	void Push(Node*);
+	Node* Pop();
 
 	friend class ExpressionTree;
 };
@@ -38,8 +39,10 @@ public:
 	~ExpressionTree() {};
 
 	Node* root;
-	void TraverseInOrder(Node* x);
+	void DeleteNode(Node* node);
+	void TraverseInOrder(Node* node);
 	void Differentiate(Node* node);
+	void Simplify(Node* node);
 private:
 	bool IsOperator(char c) {
 		return (c == '+' || c == '-' || c == '*'

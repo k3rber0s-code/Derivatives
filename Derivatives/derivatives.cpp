@@ -20,7 +20,7 @@ Node* Node::Duplicate(Node* root)
 	}
 	return newRoot;
 }
-void Stack::push(Node* x)
+void Stack::Push(Node* x)
 {
 	if (head == NULL) {
 		head = x;
@@ -31,7 +31,7 @@ void Stack::push(Node* x)
 	}
 }
 
-Node* Stack::pop()
+Node* Stack::Pop()
 {
 	Node* p = head;
 	head = head->next;
@@ -54,18 +54,22 @@ ExpressionTree::ExpressionTree(std::string expression)
 				else {
 					z = new Node(temp, INT);
 				}
-				e.push(z);
+				e.Push(z);
 				temp = "";
 			}
 			continue;
 		}
 		if (IsOperator(expression[i])) {
 			z = new Node(std::string(1, expression[i]), OPE);
-			x = e.pop();
-			y = e.pop();
+			if (e.head == NULL || e.head->next == NULL) {
+				std::cout << "Invalid input" << std::endl;
+				return;
+			}
+			x = e.Pop();
+			y = e.Pop();
 			z->left = y;
 			z->right = x;
-			e.push(z);
+			e.Push(z);
 		}
 		else {
 			temp += expression[i];
@@ -74,10 +78,24 @@ ExpressionTree::ExpressionTree(std::string expression)
 	}
 }
 
+void ExpressionTree::DeleteNode(Node* node)
+{
+	if (node == root) {
+		root = NULL;
+	}
+	if (node == NULL) {
+		return;
+	}
+	DeleteNode(node->left);
+	DeleteNode(node->right);
+	delete node;
+}
+
 void ExpressionTree::TraverseInOrder(Node* x)
 {
-	if (x == NULL)
+	if (x == NULL) {
 		return;
+	}
 	else {
 		if (x->nodeType == OPE && x != root) {
 			std::cout << "( ";
@@ -91,9 +109,6 @@ void ExpressionTree::TraverseInOrder(Node* x)
 		if (x->nodeType == OPE && x != root) {
 			std::cout << ") ";
 		}
-
-
-
 	}
 }
 
@@ -106,8 +121,8 @@ void ExpressionTree::Differentiate(Node* node)
 		if (node->nodeType == INT) {
 			node->value = "0";
 		}
-		else if (node->nodeType == VAR) { 
-			node->nodeType == INT;
+		else if (node->nodeType == VAR) {
+			node->nodeType = INT;
 			node->value = "1";
 		}
 		else {
@@ -179,6 +194,159 @@ void ExpressionTree::Differentiate(Node* node)
 
 			node->left = subtractor1;
 			node->right = multiplier3;
+		}
+	}
+}
+
+void ExpressionTree::Simplify(Node* node)
+{
+	if (!node->left->IsLeaf()) {
+		Simplify(node->left);
+	}
+	if (!node->right->IsLeaf()) {
+		Simplify(node->right);
+	}
+
+	if (node->nodeType == OPE) {
+		if (node->value == "+") {
+			if (node->left->IsLeaf() && node->right->IsLeaf()
+				&& node->left->nodeType == INT && node->right->nodeType == INT) {
+				double l = std::stod(node->left->value);
+				double r = std::stod(node->right->value);
+				std::string result = std::to_string(l + r);
+
+				result.erase(result.find_last_not_of('0') + 1, std::string::npos);
+				result.erase(result.find_last_not_of('.') + 1, std::string::npos);
+
+				node->value = result;
+				node->nodeType = INT;
+
+				DeleteNode(node->left);
+				DeleteNode(node->right);
+
+				node->left = NULL;
+				node->right = NULL;
+			}
+			else {
+				if (node->left->nodeType == INT && std::stod(node->left->value) == 0) {
+					DeleteNode(node->left);
+					node = node->right;
+				}
+				if (node->right->nodeType == INT && std::stod(node->right->value) == 0) {
+					DeleteNode(node->right);
+					node = node->left;
+				}
+			}
+		}
+		else if (node->value == "-") {
+			if (node->left->IsLeaf() && node->right->IsLeaf()
+				&& node->left->nodeType == INT && node->right->nodeType == INT) {
+				double l = std::stod(node->left->value);
+				double r = std::stod(node->right->value);
+				std::string result = std::to_string(l - r);
+
+				result.erase(result.find_last_not_of('0') + 1, std::string::npos);
+				result.erase(result.find_last_not_of('.') + 1, std::string::npos);
+
+				node->value = result;
+				node->nodeType = INT;
+
+				DeleteNode(node->left);
+				DeleteNode(node->right);
+
+				node->left = nullptr;
+				node->right = NULL;
+			}
+			else {
+				if (node->left->nodeType == INT && std::stod(node->left->value) == 0) {
+					DeleteNode(node->left);
+					node = node->right;
+				}
+				if (node->right->nodeType == INT && std::stod(node->right->value) == 0) {
+					DeleteNode(node->right);
+					node = node->left;
+				}
+			}
+		}
+		else if (node->value == "*") {
+			if (node->left->IsLeaf() && node->right->IsLeaf()
+				&& node->left->nodeType == INT && node->right->nodeType == INT) {
+				double l = std::stod(node->left->value);
+				double r = std::stod(node->right->value);
+				std::string result = std::to_string(l * r);
+
+				result.erase(result.find_last_not_of('0') + 1, std::string::npos); 
+				result.erase(result.find_last_not_of('.') + 1, std::string::npos);
+
+				node->value = result;
+				node->nodeType = INT;
+
+				DeleteNode(node->left);
+				DeleteNode(node->right);
+
+				node->left = nullptr;
+				node->right = NULL;
+			}
+			else {
+				if (node->left->nodeType == INT && std::stod(node->left->value) == 0) {
+					DeleteNode(node->left);
+					DeleteNode(node->right);
+					node->value = "0";
+					node->nodeType = INT;
+					node->left = NULL;
+					node->right = NULL;
+				}
+				else if (node->right->nodeType == INT && std::stod(node->right->value) == 0) {
+					DeleteNode(node->left);
+					DeleteNode(node->right);
+					node->value = "0";
+					node->nodeType = INT;
+					node->left = NULL;
+					node->right = NULL;
+				}
+				else if (node->left->nodeType == INT && std::stod(node->left->value) == 1) {
+					DeleteNode(node->left);
+					node = node->right;
+				}
+				else if (node->right->nodeType == INT && std::stod(node->right->value) == 1) {
+					DeleteNode(node->right);
+					node = node->left;
+				}
+			}
+		}
+		else if (node->value == "/") {
+			if (node->left->IsLeaf() && node->right->IsLeaf()
+				&& node->left->nodeType == INT && node->right->nodeType == INT) {
+				double l = std::stod(node->left->value);
+				double r = std::stod(node->right->value);
+				std::string result = std::to_string(l / r);
+
+				result.erase(result.find_last_not_of('0') + 1, std::string::npos);
+				result.erase(result.find_last_not_of('.') + 1, std::string::npos);
+
+				node->value = result;
+				node->nodeType = INT;
+
+				DeleteNode(node->left);
+				DeleteNode(node->right);
+
+				node->left = NULL;
+				node->right = NULL;
+			}
+			else {
+				if (node->left->nodeType == INT && std::stod(node->left->value) == 0) {
+					DeleteNode(node->left);
+					DeleteNode(node->right);
+					node->value = "0";
+					node->nodeType = INT;
+					node->left = NULL;
+					node->right = NULL;
+				}
+				else if (node->right->nodeType == INT && std::stod(node->right->value) == 1) {
+					DeleteNode(node->right);
+					node = node->left;
+				}
+			}
 		}
 	}
 }

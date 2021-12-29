@@ -35,7 +35,7 @@ std::string PostfixConvertor::InfixToPostfix(std::string s) {
 		}
 		// If the scanned character is
 		// an operand, add it to output string.
-		else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')) {
+		else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c=='.') {
 			temp += c;
 			if (i == s.length() - 1) {
 				result += temp;
@@ -57,6 +57,10 @@ std::string PostfixConvertor::InfixToPostfix(std::string s) {
 				result += st.top();
 				result += " ";
 				st.pop();
+				if (st.size() == 0) {
+					std:: cout << "Invalid input" << s << std::endl;
+					return "";
+				}
 			}
 			st.pop();
 		}
@@ -78,7 +82,7 @@ std::string PostfixConvertor::InfixToPostfix(std::string s) {
 		result += " ";
 		st.pop();
 	}
-	cout << result << endl;
+	//cout << result << endl;
 	return result;
 }
 
