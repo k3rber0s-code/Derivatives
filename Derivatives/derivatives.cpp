@@ -15,8 +15,8 @@ Node* Node::Duplicate(Node* root)
 	if (root->left != NULL) {
 		newRoot->left = Duplicate(root->left);
 	}
-	else if (root->right != NULL) {
-		newRoot->left = Duplicate(root->right);
+	if (root->right != NULL) {
+		newRoot->right = Duplicate(root->right);
 	}
 	return newRoot;
 }
@@ -79,11 +79,20 @@ void ExpressionTree::TraverseInOrder(Node* x)
 	if (x == NULL)
 		return;
 	else {
+		if (x->nodeType == OPE && x != root) {
+			std::cout << "( ";
+		}
 		TraverseInOrder(x->left);
 
-		std::cout << x->value << "  ";
+		std::cout << x->value << " ";
 
 		TraverseInOrder(x->right);
+
+		if (x->nodeType == OPE && x != root) {
+			std::cout << ") ";
+		}
+
+
 
 	}
 }
@@ -97,7 +106,7 @@ void ExpressionTree::Differentiate(Node* node)
 		if (node->nodeType == INT) {
 			node->value = "0";
 		}
-		else if (node->nodeType == VAR) { //nodeType VAR
+		else if (node->nodeType == VAR) { 
 			node->nodeType == INT;
 			node->value = "1";
 		}
@@ -166,7 +175,7 @@ void ExpressionTree::Differentiate(Node* node)
 			//right part
 			Node* multiplier3 = new Node("*", OPE);
 			multiplier3->left = r->Duplicate(r);
-			multiplier3->right = dr->Duplicate(dr);
+			multiplier3->right = r->Duplicate(r);
 
 			node->left = subtractor1;
 			node->right = multiplier3;
