@@ -181,11 +181,11 @@ void ExpressionTree::Differentiate(Node* node)
 			Node* dr = r->Duplicate(r);
 			Differentiate(dr);
 
-			multiplier1->left = l;
-			multiplier1->right = dr;
+			multiplier1->left = dl;
+			multiplier1->right = r;
 
-			multiplier2->left = dl;
-			multiplier2->right = r;
+			multiplier2->left = l;
+			multiplier2->right = dr;
 
 			//right part
 			Node* multiplier3 = new Node("*", OPE);
