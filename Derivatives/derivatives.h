@@ -12,6 +12,7 @@ class Node {
 public:
 	std::string value;
 	NodeType nodeType;
+	Node* parent;
 	Node* left;
 	Node* right;
 	Node* next = NULL;
@@ -44,6 +45,7 @@ public:
 	void Differentiate(Node* node);
 	void Simplify(Node* node);
 private:
+	bool IsLeftSon(Node* node) { return (node->parent->left == node); };
 	bool IsOperator(char c) {
 		return (c == '+' || c == '-' || c == '*'
 			|| c == '/' || c == '^');

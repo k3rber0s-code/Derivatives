@@ -74,11 +74,11 @@ int main()
 {
 	//std::string exp = " 2 + 3 * x - 1 ";
 	//std::string exp = " x / 0.5 + 4 * x ";
-	std::string exp = " x * x + 2 * x + 1 ";
+	//std::string exp = " x * x + 2 * x + 1 ";
 
 	//std::string exp = "( 3 / x ) + ( 2 * x )";
 
-	//std::string exp = " ( 2 + 3 ) * x - 1 ";
+	std::string exp = " ( 8 + 45.5 * 2 - 10 ) * x * x ";
 	ProcessExpression(exp);
 
 
