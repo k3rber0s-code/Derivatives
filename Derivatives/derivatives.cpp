@@ -103,7 +103,7 @@ void ExpressionTree::TraverseInOrder(Node* x)
 		return;
 	}
 	else {
-		if (x->nodeType == OPE && x != root) {
+		if (x->nodeType == OPE) {
 			std::cout << "( ";
 		}
 		TraverseInOrder(x->left);
@@ -112,7 +112,7 @@ void ExpressionTree::TraverseInOrder(Node* x)
 
 		TraverseInOrder(x->right);
 
-		if (x->nodeType == OPE && x != root) {
+		if (x->nodeType == OPE) {
 			std::cout << ") ";
 		}
 	}

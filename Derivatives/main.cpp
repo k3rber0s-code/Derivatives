@@ -78,7 +78,7 @@ int main()
 
 	//std::string exp = "( 3 / x ) + ( 2 * x )";
 
-	std::string exp = " ( 8 + 45.5 * 2 - 10 ) * x * x ";
+	std::string exp = " 2 * x ";
 	ProcessExpression(exp);
 
 
