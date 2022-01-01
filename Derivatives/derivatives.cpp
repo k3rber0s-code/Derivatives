@@ -230,10 +230,16 @@ void ExpressionTree::Simplify(Node* node)
 			else {
 				if (node->left->nodeType == INT && std::stod(node->left->value) == 0) {
 					DeleteNode(node->left);
-					node = node->right;
+					if (node == root) {
+						root = node->right;
+					}
+					node = std::move(node->right);
 				}
 				if (node->right->nodeType == INT && std::stod(node->right->value) == 0) {
 					DeleteNode(node->right);
+					if (node == root) {
+						root = node->left;
+					}
 					node = node->left;
 				}
 			}
@@ -260,10 +266,16 @@ void ExpressionTree::Simplify(Node* node)
 			else {
 				if (node->left->nodeType == INT && std::stod(node->left->value) == 0) {
 					DeleteNode(node->left);
-					node = node->right;
+					if (node == root) {
+						root = node->right;
+					}
+					node = node->right; // TODO -> -x
 				}
 				if (node->right->nodeType == INT && std::stod(node->right->value) == 0) {
 					DeleteNode(node->right);
+					if (node == root) {
+						root = node->left;
+					}
 					node = node->left;
 				}
 			}
@@ -306,11 +318,18 @@ void ExpressionTree::Simplify(Node* node)
 				}
 				else if (node->left->nodeType == INT && std::stod(node->left->value) == 1) {
 					DeleteNode(node->left);
+					if (node == root) {
+						root = node->right;
+					}
 					node = node->right;
 				}
 				else if (node->right->nodeType == INT && std::stod(node->right->value) == 1) {
 					DeleteNode(node->right);
-					node = node->left;
+					if (node == root) {
+						root = node->left;
+					}
+					node = node->left->Duplicate(node->left); //TODO - node->parent to propagate change further up
+					DeleteNode(node->left);
 				}
 			}
 		}
@@ -344,6 +363,9 @@ void ExpressionTree::Simplify(Node* node)
 				}
 				else if (node->right->nodeType == INT && std::stod(node->right->value) == 1) {
 					DeleteNode(node->right);
+					if (node == root) {
+						root = node->left;
+					}
 					node = node->left;
 				}
 			}
